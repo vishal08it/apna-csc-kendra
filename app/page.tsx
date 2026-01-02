@@ -14,8 +14,6 @@ const services = [
     isRTPS: true,
   },
   { img: "/voter.jpg", title: "Voter ID", desc: "New registration & correction" },
-  { img: "/passport.jpg", title: "Passport", desc: "New passport or Renew" },
-  { img: "/character.png", title: "Police verification", desc: "Character certificate from SP" },
   { img: "/ration.jpg", title: "Ration Card", desc: "Add, update & correction services" },
   { img: "/elabharthi.png", title: "Elabharthi Pension", desc: "Pension application & updates" },
 ];
@@ -138,26 +136,23 @@ export default function Home() {
                   Select application level
                 </p>
 
-               <div className="space-y-3">
+                <div className="space-y-3">
   {["RO Level", "SDO Level", "DM Level"].map((level) => (
     <button
       key={level}
       onClick={() => {
-        const levelPath =
-          level === "RO Level" ? "ro" :
-          level === "SDO Level" ? "sdo" :
-          "dm";
+        if (level !== "RO Level") return;
 
         if (selectedCert === "Domicile Certificate") {
-          router.push(`/rtps/domicile/${levelPath}`);
+          router.push("/rtps/domicile/ro");
         }
 
         if (selectedCert === "Income Certificate") {
-          router.push(`/rtps/income/${levelPath}`);
+          router.push("/rtps/income/ro");
         }
 
         if (selectedCert === "Caste Certificate") {
-          router.push(`/rtps/caste/${levelPath}`);
+          router.push("/rtps/caste/ro");
         }
       }}
       className="w-full bg-black/40 border border-gray-700
@@ -168,7 +163,6 @@ export default function Home() {
     </button>
   ))}
 </div>
-
 
                 <button
                   onClick={() => setSelectedCert(null)}
