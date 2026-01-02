@@ -136,23 +136,26 @@ export default function Home() {
                   Select application level
                 </p>
 
-                <div className="space-y-3">
+               <div className="space-y-3">
   {["RO Level", "SDO Level", "DM Level"].map((level) => (
     <button
       key={level}
       onClick={() => {
-        if (level !== "RO Level") return;
+        const levelPath =
+          level === "RO Level" ? "ro" :
+          level === "SDO Level" ? "sdo" :
+          "dm";
 
         if (selectedCert === "Domicile Certificate") {
-          router.push("/rtps/domicile/ro");
+          router.push(`/rtps/domicile/${levelPath}`);
         }
 
         if (selectedCert === "Income Certificate") {
-          router.push("/rtps/income/ro");
+          router.push(`/rtps/income/${levelPath}`);
         }
 
         if (selectedCert === "Caste Certificate") {
-          router.push("/rtps/caste/ro");
+          router.push(`/rtps/caste/${levelPath}`);
         }
       }}
       className="w-full bg-black/40 border border-gray-700
@@ -163,6 +166,7 @@ export default function Home() {
     </button>
   ))}
 </div>
+
 
                 <button
                   onClick={() => setSelectedCert(null)}
