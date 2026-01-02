@@ -5,10 +5,16 @@ import { useState } from "react";
 export default function CasteROApplyForm() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [docPreview, setDocPreview] = useState<string | null>(null);
-  const [applicationType, setApplicationType] = useState<"normal" | "tatkal">("normal");
+  const [photoConfirmed, setPhotoConfirmed] = useState(false);
+  const [docConfirmed, setDocConfirmed] = useState(false);
+
+  const [applicationType, setApplicationType] =
+    useState<"normal" | "tatkal">("normal");
   const [gender, setGender] = useState("");
   const [status, setStatus] = useState("");
+
   const fee = applicationType === "tatkal" ? 80 : 40;
+  const canSubmit = photoPreview && docPreview && photoConfirmed && docConfirmed;
 
   return (
     <section className="min-h-screen bg-gray-900 text-white px-4 py-10">
@@ -77,7 +83,6 @@ export default function CasteROApplyForm() {
           <Input label="Email ID / ईमेल आईडी *" required />
           <Input label="Police Station / थाना *" required />
 
-          {/* ADDRESS LOGIC */}
           {gender.includes("Female") && status === "married" ? (
             <>
               <Textarea label="Permanent Address (Father/Mother/Brother) / स्थायी पता *" />
@@ -118,6 +123,14 @@ export default function CasteROApplyForm() {
             onChange={setPhotoPreview}
             accept="image/*"
           />
+
+          {photoPreview && (
+            <Confirmation
+              checked={photoConfirmed}
+              onChange={setPhotoConfirmed}
+              text="I confirm the photo is self attested"
+            />
+          )}
         </Section>
 
         {/* DOCUMENT */}
@@ -134,11 +147,14 @@ export default function CasteROApplyForm() {
             onChange={setDocPreview}
             accept=".jpg,.jpeg"
           />
-        </Section>
 
-        {/* PURPOSE */}
-        <Section title="Purpose of Application / आवेदन का उद्देश्य">
-          <Textarea label="Purpose / उद्देश्य" />
+          {docPreview && (
+            <Confirmation
+              checked={docConfirmed}
+              onChange={setDocConfirmed}
+              text="I confirm the document is self attested"
+            />
+          )}
         </Section>
 
         {/* FEE */}
@@ -147,10 +163,23 @@ export default function CasteROApplyForm() {
           <p className="text-2xl font-bold text-green-400">₹{fee}</p>
         </div>
 
+        {/* WARNING */}
+        {!canSubmit && (
+          <p className="text-center text-red-500 font-semibold animate-pulse">
+            ⚠ Upload documents & confirm self-attestation
+          </p>
+        )}
+
         {/* SUBMIT */}
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-lg font-semibold transition"
+          disabled={!canSubmit}
+          className={`w-full py-3 rounded-lg font-semibold transition
+            ${
+              canSubmit
+                ? "bg-blue-600 hover:bg-blue-700"
+                : "bg-gray-600 cursor-not-allowed"
+            }`}
         >
           Submit Application / आवेदन जमा करें
         </button>
@@ -159,7 +188,7 @@ export default function CasteROApplyForm() {
   );
 }
 
-/* =================== REUSABLE COMPONENTS =================== */
+/* ================= COMPONENTS ================= */
 
 function Section({ title, children }: any) {
   return (
@@ -212,13 +241,13 @@ function RadioGroup({ options, value, onChange }: any) {
   return (
     <div className="flex gap-6 flex-wrap">
       {options.map((opt: any) => (
-        <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
+        <label key={opt.value} className="flex items-center gap-2">
           <input
             type="radio"
             checked={value === opt.value}
             onChange={() => onChange(opt.value)}
           />
-          <span>{opt.label}</span>
+          {opt.label}
         </label>
       ))}
     </div>
@@ -227,7 +256,7 @@ function RadioGroup({ options, value, onChange }: any) {
 
 function UploadBox({ title, subtitle, preview, onChange, accept, icon }: any) {
   return (
-    <label className="upload-box-full">
+    <label className="upload-box-full cursor-pointer">
       {!preview ? (
         <>
           <span className="text-5xl">{icon}</span>
@@ -235,12 +264,14 @@ function UploadBox({ title, subtitle, preview, onChange, accept, icon }: any) {
           <p className="text-xs text-gray-400 text-center">{subtitle}</p>
         </>
       ) : (
-        <img src={preview} className="h-48 rounded border border-gray-600 mx-auto" />
+        <img
+          src={preview}
+          className="h-48 rounded border border-gray-600 mx-auto"
+        />
       )}
       <input
         type="file"
         hidden
-        required
         accept={accept}
         onChange={(e) =>
           onChange(
@@ -250,6 +281,23 @@ function UploadBox({ title, subtitle, preview, onChange, accept, icon }: any) {
           )
         }
       />
+    </label>
+  );
+}
+
+function Confirmation({ checked, onChange, text }: any) {
+  return (
+    <label
+      className={`flex justify-center items-center gap-3 mt-3 font-bold text-sm
+      ${checked ? "text-green-400" : "text-red-500 animate-pulse"}`}
+    >
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        className="scale-110"
+      />
+      {text}
     </label>
   );
 }

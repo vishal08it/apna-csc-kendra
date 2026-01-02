@@ -7,7 +7,15 @@ export default function ROApplyForm() {
   const [docPreview, setDocPreview] = useState<string | null>(null);
   const [applyType, setApplyType] = useState<"normal" | "tatkal">("normal");
 
+  // NEW STATES (ONLY ADDITION)
+  const [photoAttested, setPhotoAttested] = useState(false);
+  const [docAttested, setDocAttested] = useState(false);
+
   const fee = applyType === "normal" ? 40 : 80;
+
+  // FORM VALIDATION
+  const isFormValid =
+    photoPreview && docPreview && photoAttested && docAttested;
 
   return (
     <section className="min-h-screen bg-gray-900 text-white px-4 py-10">
@@ -25,7 +33,7 @@ export default function ROApplyForm() {
         </p>
       </div>
 
-      {/* FORM – FULL PAGE */}
+      {/* FORM */}
       <form className="max-w-5xl mx-auto space-y-10">
 
         {/* APPLY TYPE */}
@@ -38,24 +46,18 @@ export default function ROApplyForm() {
             <label className="radio-card">
               <input
                 type="radio"
-                name="applyType"
                 checked={applyType === "normal"}
                 onChange={() => setApplyType("normal")}
               />
               <div>
-                <p className="font-semibold">
-                  Normal / सामान्य
-                </p>
-                <p className="text-sm text-gray-400">
-                  Fee ₹40
-                </p>
+                <p className="font-semibold">Normal / सामान्य</p>
+                <p className="text-sm text-gray-400">Fee ₹40</p>
               </div>
             </label>
 
             <label className="radio-card">
               <input
                 type="radio"
-                name="applyType"
                 checked={applyType === "tatkal"}
                 onChange={() => setApplyType("tatkal")}
               />
@@ -63,9 +65,7 @@ export default function ROApplyForm() {
                 <p className="font-semibold text-yellow-400">
                   Tatkal / तत्काल
                 </p>
-                <p className="text-sm text-gray-400">
-                  Fee ₹80
-                </p>
+                <p className="text-sm text-gray-400">Fee ₹80</p>
               </div>
             </label>
           </div>
@@ -111,6 +111,29 @@ export default function ROApplyForm() {
             accept="image/*"
             icon="📸"
           />
+
+          {/* CONFIRMATION — ONLY ADDITION */}
+          {photoPreview && (
+            <div className="text-center mt-2">
+              <label
+                className={`inline-flex items-center gap-2 font-bold text-sm
+                  ${photoAttested ? "text-green-400" : "text-red-400"}`}
+              >
+                <input
+                  type="checkbox"
+                  checked={photoAttested}
+                  onChange={(e) => setPhotoAttested(e.target.checked)}
+                />
+                I confirm the photo is self attested
+              </label>
+
+              {!photoAttested && (
+                <p className="text-xs text-red-400 animate-pulse mt-1">
+                  ❌ Signature on Photo required
+                </p>
+              )}
+            </div>
+          )}
         </section>
 
         {/* DOCUMENT UPLOAD */}
@@ -125,6 +148,29 @@ export default function ROApplyForm() {
             accept=".jpg,.jpeg"
             icon="📄"
           />
+
+          {/* CONFIRMATION — ONLY ADDITION */}
+          {docPreview && (
+            <div className="text-center mt-2">
+              <label
+                className={`inline-flex items-center gap-2 font-bold text-sm
+                  ${docAttested ? "text-green-400" : "text-red-400"}`}
+              >
+                <input
+                  type="checkbox"
+                  checked={docAttested}
+                  onChange={(e) => setDocAttested(e.target.checked)}
+                />
+                I confirm the document is self attested
+              </label>
+
+              {!docAttested && (
+                <p className="text-xs text-red-400 animate-pulse mt-1">
+                  ❌ Signature on Document required
+                </p>
+              )}
+            </div>
+          )}
         </section>
 
         {/* PURPOSE */}
@@ -132,7 +178,7 @@ export default function ROApplyForm() {
           <Textarea label="Purpose of Application / आवेदन का उद्देश्य" />
         </section>
 
-        {/* FEE DISPLAY */}
+        {/* FEE */}
         <section className="bg-black/60 border border-gray-700 rounded-xl p-5 text-center">
           <p className="text-sm text-gray-400">
             Application Fee / आवेदन शुल्क
@@ -145,8 +191,13 @@ export default function ROApplyForm() {
         {/* SUBMIT */}
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-xl
-                     font-semibold text-lg transition"
+          disabled={!isFormValid}
+          className={`w-full py-4 rounded-xl font-semibold text-lg transition
+            ${
+              isFormValid
+                ? "bg-blue-600 hover:bg-blue-700"
+                : "bg-gray-600 cursor-not-allowed opacity-60"
+            }`}
         >
           Submit Application / आवेदन जमा करें
         </button>
@@ -209,7 +260,6 @@ function UploadBox({ title, subtitle, preview, onChange, accept, icon }: any) {
         type="file"
         hidden
         accept={accept}
-        required
         onChange={(e) =>
           onChange(
             e.target.files?.[0]

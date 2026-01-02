@@ -6,9 +6,13 @@ export default function IncomeROApplyForm() {
   const [applyType, setApplyType] = useState<"normal" | "tatkal">("normal");
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [docPreview, setDocPreview] = useState<string | null>(null);
+  const [photoConfirmed, setPhotoConfirmed] = useState(false);
+  const [docConfirmed, setDocConfirmed] = useState(false);
   const [profession, setProfession] = useState("");
 
   const fee = applyType === "normal" ? 40 : 80;
+  const canSubmit =
+    photoPreview && docPreview && photoConfirmed && docConfirmed;
 
   return (
     <section className="min-h-screen bg-gray-900 text-white px-4 py-10">
@@ -99,9 +103,7 @@ export default function IncomeROApplyForm() {
           </h2>
 
           <div>
-            <label className="form-label">
-              Profession / पेशा *
-            </label>
+            <label className="form-label">Profession / पेशा *</label>
             <select
               className="form-input"
               required
@@ -118,23 +120,18 @@ export default function IncomeROApplyForm() {
             </select>
           </div>
 
-          {/* CONDITIONAL INCOME */}
           {profession === "govt" && (
             <Input label="Income from Govt. Service / सरकारी सेवा से आय *" required />
           )}
-
           {profession === "private" && (
             <Input label="Income from Other Sources / अन्य स्रोतों से आय *" required />
           )}
-
           {profession === "farmer" && (
             <Input label="Income from Farmer / कृषि से आय *" required />
           )}
-
           {profession === "business" && (
             <Input label="Income from Business / व्यवसाय से आय *" required />
           )}
-
           {profession &&
             !["govt", "private", "farmer", "business"].includes(profession) && (
               <Input label="Other Income / अन्य आय *" required />
@@ -153,6 +150,14 @@ export default function IncomeROApplyForm() {
             accept="image/*"
             icon="📸"
           />
+
+          {photoPreview && (
+            <Confirmation
+              checked={photoConfirmed}
+              onChange={setPhotoConfirmed}
+              text="I confirm the photo is self attested"
+            />
+          )}
         </section>
 
         {/* DOCUMENT */}
@@ -167,6 +172,14 @@ export default function IncomeROApplyForm() {
             accept=".jpg,.jpeg"
             icon="📄"
           />
+
+          {docPreview && (
+            <Confirmation
+              checked={docConfirmed}
+              onChange={setDocConfirmed}
+              text="I confirm the document is self attested"
+            />
+          )}
         </section>
 
         {/* PURPOSE */}
@@ -184,15 +197,26 @@ export default function IncomeROApplyForm() {
           </p>
         </section>
 
+        {/* WARNING */}
+        {!canSubmit && (
+          <p className="text-center text-red-500 font-semibold animate-pulse">
+            ⚠ Please upload documents and confirm self-attestation
+          </p>
+        )}
+
         {/* SUBMIT */}
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-xl
-                     font-semibold text-lg transition"
+          disabled={!canSubmit}
+          className={`w-full py-4 rounded-xl font-semibold text-lg transition
+            ${
+              canSubmit
+                ? "bg-blue-600 hover:bg-blue-700"
+                : "bg-gray-600 cursor-not-allowed"
+            }`}
         >
           Submit Application / आवेदन जमा करें
         </button>
-
       </form>
     </section>
   );
@@ -246,12 +270,10 @@ function UploadBox({ title, subtitle, preview, onChange, accept, icon }: any) {
           className="h-48 mx-auto rounded-xl border border-gray-600 object-contain"
         />
       )}
-
       <input
         type="file"
         hidden
         accept={accept}
-        required
         onChange={(e) =>
           onChange(
             e.target.files?.[0]
@@ -260,6 +282,23 @@ function UploadBox({ title, subtitle, preview, onChange, accept, icon }: any) {
           )
         }
       />
+    </label>
+  );
+}
+
+function Confirmation({ checked, onChange, text }: any) {
+  return (
+    <label
+      className={`flex justify-center items-center gap-3 font-bold text-sm mt-2
+      ${checked ? "text-green-400" : "text-red-500 animate-pulse"}`}
+    >
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        className="scale-110"
+      />
+      {text}
     </label>
   );
 }
