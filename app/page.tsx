@@ -157,6 +157,9 @@ export default function Home() {
         if (selectedCert === "Caste Certificate") {
           router.push(`/rtps/caste/${levelPath}`);
         }
+         if (selectedCert === "OBC NCL (State)") {
+          router.push(`/rtps/obcnclstate/${levelPath}`);
+        }
       }}
       className="w-full bg-black/40 border border-gray-700
                  py-3 rounded-lg text-center text-sm
