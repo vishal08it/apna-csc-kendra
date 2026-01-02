@@ -65,3 +65,45 @@ body {
   );
   pointer-events: none;
 }
+
+.apply-btn {
+  background: linear-gradient(90deg, #ff9933, #ffffff, #138808);
+  color: #000;
+  padding: 8px 18px;          /* ⬅ reduced */
+  font-size: 14px;            /* ⬅ medium */
+  border-radius: 9999px;
+  font-weight: 600;
+  line-height: 1.2;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.apply-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 640px) {
+  .apply-btn {
+    padding: 7px 16px;
+    font-size: 13px;
+  }
+}
+.form-label {
+  @apply block mb-1 text-sm font-medium text-gray-300;
+}
+
+.form-input {
+  @apply w-full bg-black/40 border border-gray-700 rounded-md
+         px-4 py-2 text-sm outline-none
+         focus:border-blue-500 focus:ring-1 focus:ring-blue-500;
+}
+
+.section-title {
+  @apply text-lg font-semibold border-b border-gray-700 pb-2;
+}
+
+.upload-box-full {
+  @apply w-full border-2 border-dashed border-gray-600
+         rounded-xl p-8 text-center cursor-pointer
+         bg-black/30 hover:bg-black/50 transition;
+}
