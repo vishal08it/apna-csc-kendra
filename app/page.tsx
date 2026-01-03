@@ -160,6 +160,9 @@ export default function Home() {
          if (selectedCert === "OBC NCL (State)") {
           router.push(`/rtps/obcnclstate/${levelPath}`);
         }
+         if (selectedCert === "OBC NCL (Central)") {
+          router.push(`/rtps/obcnclcentral/${levelPath}`);
+        }
       }}
       className="w-full bg-black/40 border border-gray-700
                  py-3 rounded-lg text-center text-sm
