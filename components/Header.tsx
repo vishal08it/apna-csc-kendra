@@ -23,13 +23,19 @@ export default function Header() {
 
         {/* Center: Title (PERFECT CENTER) */}
         <div className="mx-auto text-center">
-          <h1 className="csc-3d-text glow-text text-lg sm:text-xl md:text-3xl">
-            Apna CSC Kendra
-          </h1>
-          <p className="text-[10px] sm:text-xs md:text-sm tracking-widest text-white/90">
-            Common Service Center
-          </p>
-        </div>
+  <h1 className="text-lg sm:text-xl md:text-3xl font-bold tricolor-wave">
+    {"Apna CSC Kendra".split("").map((char, i) => (
+      <span key={i} style={{ animationDelay: `${i * 0.12}s` }}>
+        {char === " " ? "\u00A0" : char}
+      </span>
+    ))}
+  </h1>
+
+  <p className="text-[10px] sm:text-xs md:text-sm tracking-widest text-white/90">
+    Common Service Center
+  </p>
+</div>
+
 
         {/* Right: Mobile Menu */}
         <button
@@ -42,8 +48,8 @@ export default function Header() {
         {/* Desktop Menu */}
         <nav className="hidden md:flex absolute right-6 gap-6 text-white font-medium">
           <a href="/">Home</a>
-         <a href="#">Contact</a>
-          <a href="#">Login</a>
+         <a href="contact">Contact</a>
+          <a href="#">Admin Login</a>
         </nav>
       </div>
 
@@ -51,8 +57,8 @@ export default function Header() {
       {open && (
         <div className="md:hidden bg-black/90 text-white px-4 py-3 space-y-3 text-center">
           <a className="block" href="/">Home</a>
-           <a className="block" href="#">Contact</a>
-          <a className="block" href="#">Login</a>
+           <a className="block" href="/contact">Contact</a>
+          <a className="block" href="#">Admin Login</a>
         </div>
       )}
     </header>
