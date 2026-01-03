@@ -107,3 +107,29 @@ body {
          rounded-xl p-8 text-center cursor-pointer
          bg-black/30 hover:bg-black/50 transition;
 }
+/* 🇮🇳 Tricolor wave animation */
+.tricolor-wave span {
+  display: inline-block;
+  animation: wave 1.8s ease-in-out infinite;
+}
+
+.tricolor-wave span:nth-child(3n + 1) {
+  color: #ff9933; /* Saffron */
+}
+
+.tricolor-wave span:nth-child(3n + 2) {
+  color: #ffffff; /* White */
+}
+
+.tricolor-wave span:nth-child(3n + 3) {
+  color: #138808; /* Green */
+}
+
+@keyframes wave {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
