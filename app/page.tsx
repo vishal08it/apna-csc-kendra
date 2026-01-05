@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation"; // ✅ ADDED
+import { useRouter } from "next/navigation";
 
 const services = [
   { img: "/driving.jpg", title: "Driving Licence", desc: "Update, correction & linking services" },
-  { img: "/pan.png", title: "PAN Card Services", desc: "New PAN & PAN corrections" },
+  { img: "/pan.png", title: "PAN Card Services", desc: "New PAN & PAN corrections", isPan: true },
   {
     img: "/rtps1.jpg",
     title: "Cast, Domicile, Income, OBC NCL",
@@ -30,7 +30,7 @@ export default function Home() {
   const [openRTPS, setOpenRTPS] = useState(false);
   const [selectedCert, setSelectedCert] = useState<string | null>(null);
 
-  const router = useRouter(); // ✅ ADDED
+  const router = useRouter();
 
   return (
     <section className="min-h-screen bg-gray-900 relative overflow-hidden">
@@ -71,7 +71,13 @@ export default function Home() {
 
               <button
                 className="apply-btn mx-auto"
-                onClick={() => item.isRTPS && setOpenRTPS(true)}
+                onClick={() => {
+                  if (item.isPan) {
+                    router.push("/pan"); // ✅ PAN PAGE ROUTE
+                  } else if (item.isRTPS) {
+                    setOpenRTPS(true);
+                  }
+                }}
               >
                 Apply Now
               </button>
@@ -80,7 +86,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ================= POPUP ================= */}
+      {/* ================= RTPS POPUP ================= */}
       {openRTPS && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-3">
 
@@ -136,43 +142,41 @@ export default function Home() {
                   Select application level
                 </p>
 
-               <div className="space-y-3">
-  {["RO Level", "SDO Level", "DM Level"].map((level) => (
-    <button
-      key={level}
-      onClick={() => {
-        const levelPath =
-          level === "RO Level" ? "ro" :
-          level === "SDO Level" ? "sdo" :
-          "dm";
+                <div className="space-y-3">
+                  {["RO Level", "SDO Level", "DM Level"].map((level) => {
+                    const levelPath =
+                      level === "RO Level" ? "ro" :
+                      level === "SDO Level" ? "sdo" : "dm";
 
-        if (selectedCert === "Domicile Certificate") {
-          router.push(`/rtps/domicile/${levelPath}`);
-        }
-
-        if (selectedCert === "Income Certificate") {
-          router.push(`/rtps/income/${levelPath}`);
-        }
-
-        if (selectedCert === "Caste Certificate") {
-          router.push(`/rtps/caste/${levelPath}`);
-        }
-         if (selectedCert === "OBC NCL (State)") {
-          router.push(`/rtps/obcnclstate/${levelPath}`);
-        }
-         if (selectedCert === "OBC NCL (Central)") {
-          router.push(`/rtps/obcnclcentral/${levelPath}`);
-        }
-      }}
-      className="w-full bg-black/40 border border-gray-700
-                 py-3 rounded-lg text-center text-sm
-                 hover:bg-green-600 hover:border-green-500 transition"
-    >
-      Apply for {level}
-    </button>
-  ))}
-</div>
-
+                    return (
+                      <button
+                        key={level}
+                        onClick={() => {
+                          if (selectedCert === "Domicile Certificate") {
+                            router.push(`/rtps/domicile/${levelPath}`);
+                          }
+                          if (selectedCert === "Income Certificate") {
+                            router.push(`/rtps/income/${levelPath}`);
+                          }
+                          if (selectedCert === "Caste Certificate") {
+                            router.push(`/rtps/caste/${levelPath}`);
+                          }
+                          if (selectedCert === "OBC NCL (State)") {
+                            router.push(`/rtps/obcnclstate/${levelPath}`);
+                          }
+                          if (selectedCert === "OBC NCL (Central)") {
+                            router.push(`/rtps/obcnclcentral/${levelPath}`);
+                          }
+                        }}
+                        className="w-full bg-black/40 border border-gray-700
+                                   py-3 rounded-lg text-center text-sm
+                                   hover:bg-green-600 hover:border-green-500 transition"
+                      >
+                        Apply for {level}
+                      </button>
+                    );
+                  })}
+                </div>
 
                 <button
                   onClick={() => setSelectedCert(null)}
