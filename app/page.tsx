@@ -13,7 +13,7 @@ const services = [
     desc: "Government certificate services",
     isRTPS: true,
   },
-  { img: "/voter.jpg", title: "Voter ID", desc: "New registration & correction" },
+  { img: "/voter.jpg", title: "Voter ID", desc: "New registration & correction",isVoter: true },
   { img: "/ration.jpg", title: "Ration Card", desc: "Add, update & correction services" },
   { img: "/elabharthi.png", title: "Elabharthi Pension", desc: "Pension application & updates" },
 ];
@@ -70,17 +70,22 @@ export default function Home() {
               <p className="text-gray-300 text-center text-sm flex-grow mb-4">{item.desc}</p>
 
               <button
-                className="apply-btn mx-auto"
-                onClick={() => {
-                  if (item.isPan) {
-                    router.push("/pan"); // ✅ PAN PAGE ROUTE
-                  } else if (item.isRTPS) {
-                    setOpenRTPS(true);
-                  }
-                }}
-              >
-                Apply Now
-              </button>
+  className="apply-btn mx-auto"
+  onClick={() => {
+    if (item.isPan) {
+      router.push("/pan"); // ✅ PAN PAGE
+    } 
+    else if (item.isVoter) {
+      router.push("/voterid"); // ✅ VOTER ID PAGE
+    } 
+    else if (item.isRTPS) {
+      setOpenRTPS(true);
+    }
+  }}
+>
+  Apply Now
+</button>
+
             </div>
           ))}
         </div>
