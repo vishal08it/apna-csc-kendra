@@ -18,14 +18,15 @@ export default function ContactPage() {
           designation="CSC SUPERVISOR"
           name="Vikash Kumar"
           phone="9963291796"
+          email= "apnacsc1989@gmail.com"
         />
 
-        <ContactCard
+        {/* <ContactCard
           image="/vk.png"
           designation="CSC OPERATOR"
           name="Vishal Kumar"
           phone="7541037802"
-        />
+        /> */}
       </div>
 
     </section>
@@ -39,11 +40,13 @@ function ContactCard({
   name,
   phone,
   designation,
+  email,
 }: {
   image: string;
   name: string;
   phone: string;
   designation: string;
+  email:string
 }) {
   return (
     <div className="
@@ -78,7 +81,13 @@ function ContactCard({
       <p className="mt-2 text-green-400 font-semibold text-lg">
         📞 {phone}
       </p>
-
+<p className="mt-6 text-xl tricolor-wave">
+        {email.split("").map((char, i) => (
+          <span key={i}>
+            {char === " " ? "\u00A0" : char}
+          </span>
+        ))}
+      </p>
     </div>
   );
 }
