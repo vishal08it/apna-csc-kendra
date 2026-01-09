@@ -13,6 +13,10 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+
+    /* ✅ ADD THIS ONLY */
+    "typeRoots": ["./types", "./node_modules/@types"],
+
     "plugins": [
       {
         "name": "next"

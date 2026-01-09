@@ -11,22 +11,30 @@ export default function PaymentClient() {
 
   const [fee, setFee] = useState<number>(0);
   const [txnId, setTxnId] = useState("");
+  const [draftData, setDraftData] = useState<any>(null);
 
+  // 🔹 LOAD DRAFT DATA
   useEffect(() => {
-    if (!draftId) return;
+  if (!draftId) return;
+
 
     fetch(`/api/pan/get?draftId=${draftId}`)
       .then(res => res.json())
-      .then(data => setFee(data.fee))
-      .catch(() => alert("Failed to load fee"));
+      .then(data => {
+        setFee(data.fee);
+        setDraftData(data);
+      })
+      .catch(() => alert("Failed to load payment data"));
   }, [draftId]);
 
+  // 🔹 SUBMIT PAYMENT
   async function submitPayment() {
     if (txnId.length !== 12) {
       alert("Enter valid 12 digit TXN ID");
       return;
     }
 
+    // 1️⃣ SAVE PAYMENT
     const res = await fetch("/api/pan/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -38,7 +46,25 @@ export default function PaymentClient() {
       return;
     }
 
-    alert("Payment Successful");
+    // 2️⃣ SEND RECEIPT EMAIL (USER + ADMIN)
+    await fetch("/api/pan/send-receipt", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        applicationId: draftData._id,
+        name:
+          draftData.applicantName?.first +
+          " " +
+          draftData.applicantName?.last,
+        email: draftData.email,
+        mobile: draftData.mobile,
+        panType: draftData.panType,
+        fee: draftData.fee,
+        txnId,
+      }),
+    });
+
+    alert("Payment Successful & Receipt Sent");
     router.push("/");
   }
 
@@ -48,7 +74,7 @@ export default function PaymentClient() {
     <div className="min-h-screen flex flex-col items-center justify-center gap-6 bg-gray-900 text-white">
       <h1 className="text-2xl font-bold">Pay ₹{fee}</h1>
 
-      {/* SAFE IMAGE */}
+      {/* ✅ QR WITH AUTO AMOUNT */}
       <img
         src={qrUrl}
         alt="UPI QR"
@@ -57,6 +83,7 @@ export default function PaymentClient() {
         className="rounded bg-white p-2"
       />
 
+      {/* ✅ ATTRACTIVE TXN INPUT */}
       <input
         value={txnId}
         maxLength={12}
