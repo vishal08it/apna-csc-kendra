@@ -18,6 +18,7 @@ async function uploadFile(file: File | null, folder: string) {
   });
 }
 
+
 export async function POST(req: NextRequest) {
   await connectDB();
 
