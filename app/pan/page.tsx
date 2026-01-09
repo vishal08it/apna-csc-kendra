@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 /* ================= MAIN PAGE ================= */
 
@@ -48,51 +47,28 @@ export default function PanCardPage() {
 /* ================= NEW PAN ================= */
 
 function NewPanForm() {
-  const router = useRouter();
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault(); // 🚫 STOP REFRESH
-
-    const formData = new FormData(e.currentTarget);
-    formData.append("panType", "new");
-    formData.append("fee", "250");
-
-    const res = await fetch("/api/pan/submit?draft=true", {
-      method: "POST",
-      body: formData,
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      router.push(`/payment?draftId=${data.id}`);
-    } else {
-      alert("Server error");
-    }
-  }
-
   return (
-    <form className="space-y-8" onSubmit={handleSubmit}>
+    <form className="space-y-8">
 
       <Section title="Applicant Name">
-        <ThreeInput a="First Name" b="Middle Name" c="Last Name" prefix="applicant" />
+        <ThreeInput a="First Name" b="Middle Name" c="Last Name" />
       </Section>
 
       <Section title="Personal Details">
-        <Input type="date" label="Date of Birth" name="dob" />
-        <Input label="Email ID*" name="email" />
-        <Input label="Mobile Number*" name="mobile" />
-        <Input label="Aadhaar Number" name="aadhaar" />
-        <Input label="Name on Aadhaar Card" name="aadhaarName" />
-        <Select label="Gender" name="gender" options={["Male", "Female"]} />
+        <Input type="date" label="Date of Birth" />
+        <Input label="Email ID*" />
+        <Input label="Mobile Number*" />
+        <Input label="Aadhaar Number" />
+        <Input label="Name on Aadhaar Card" />
+        <Select label="Gender" options={["Male", "Female"]} />
       </Section>
 
       <Section title="Father's Name">
-        <ThreeInput a="First Name" b="Middle Name" c="Last Name" prefix="father" />
+        <ThreeInput a="First Name" b="Middle Name" c="Last Name" />
       </Section>
 
       <Section title="Mother's Name">
-        <ThreeInput a="First Name" b="Middle Name" c="Last Name" prefix="mother" />
+        <ThreeInput a="First Name" b="Middle Name" c="Last Name" />
       </Section>
 
       <Section title="Name to be printed on PAN">
@@ -119,56 +95,34 @@ function NewPanForm() {
 /* ================= CORRECTION PAN ================= */
 
 function CorrectionPanForm() {
-  const router = useRouter();
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    const formData = new FormData(e.currentTarget);
-    formData.append("panType", "correction");
-    formData.append("fee", "200");
-
-    const res = await fetch("/api/pan/submit?draft=true", {
-      method: "POST",
-      body: formData,
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      router.push(`/payment?draftId=${data.id}`);
-    } else {
-      alert("Server error");
-    }
-  }
-
   return (
-    <form className="space-y-8" onSubmit={handleSubmit}>
+    <form className="space-y-8">
 
       <Section title="Applicant Name">
-        <ThreeInput a="First Name" b="Middle Name" c="Last Name" prefix="applicant" />
+        <ThreeInput a="First Name" b="Middle Name" c="Last Name" />
       </Section>
 
       <Section title="Personal Details">
-        <Input type="date" label="Date of Birth" name="dob" />
-        <Input label="Email ID*" name="email" />
-        <Input label="Mobile Number*" name="mobile" />
-        <Input label="PAN Number*" name="panNumber" />
-        <Input label="Aadhaar Number" name="aadhaar" />
-        <Input label="Name on Aadhaar Card" name="aadhaarName" />
-        <Select label="Gender" name="gender" options={["Male", "Female"]} />
+        <Input type="date" label="Date of Birth" />
+        <Input label="Email ID*" />
+        <Input label="Mobile Number*" />
+        <RadioGroup name="citizen" label="Citizen of India" options={["Yes", "No"]} />
+        <Input label="PAN Number*" />
+        <Input label="Aadhaar Number" />
+        <Input label="Name on Aadhaar Card" />
+        <Select label="Gender" options={["Male", "Female"]} />
       </Section>
 
       <Section title="Father's Name">
-        <ThreeInput a="First Name" b="Middle Name" c="Last Name" prefix="father" />
+        <ThreeInput a="First Name" b="Middle Name" c="Last Name" />
       </Section>
 
       <Section title="Mother's Name">
-        <ThreeInput a="First Name" b="Middle Name" c="Last Name" prefix="mother" />
+        <ThreeInput a="First Name" b="Middle Name" c="Last Name" />
       </Section>
 
       <Section title="Name to be printed on PAN">
-        <RadioGroup name="panPrint" options={["Father", "Mother"]} />
+        <RadioGroup name="panPrintCorrection" options={["Father", "Mother"]} />
       </Section>
 
       <AddressSection />
@@ -184,13 +138,21 @@ function CorrectionPanForm() {
 
 /* ================= DOCUMENT SECTION ================= */
 
-function DocumentUpload({ label, nameType, nameFile }: any) {
+function DocumentUpload({ label }: any) {
+  const [selected, setSelected] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
 
   return (
     <div className="grid md:grid-cols-2 gap-4 col-span-2 items-center">
       <div>
-        <select name={nameType} className="w-full p-3 rounded bg-gray-900 border border-gray-600">
+        <select
+          className="w-full p-3 rounded bg-gray-900 border border-gray-600"
+          value={selected}
+          onChange={(e) => {
+            setSelected(e.target.value);
+            setPreview(null);
+          }}
+        >
           <option value="">{label}</option>
           <option>Aadhaar</option>
           <option>Voter ID</option>
@@ -198,19 +160,25 @@ function DocumentUpload({ label, nameType, nameFile }: any) {
           <option>Driving Licence</option>
         </select>
 
-        <input
-          type="file"
-          name={nameFile}
-          accept=".jpg,.jpeg,.png"
-          className="mt-3 w-full p-2 bg-gray-900 border border-gray-600 rounded"
-          onChange={(e) =>
-            e.target.files &&
-            setPreview(URL.createObjectURL(e.target.files[0]))
-          }
-        />
+        {selected && (
+          <input
+            type="file"
+            accept=".jpg,.jpeg,.png"
+            className="mt-3 w-full p-2 bg-gray-900 border border-gray-600 rounded"
+            onChange={(e) =>
+              e.target.files &&
+              setPreview(URL.createObjectURL(e.target.files[0]))
+            }
+          />
+        )}
       </div>
 
-      {preview && <img src={preview} className="w-40 h-28 object-cover border rounded justify-self-end" />}
+      {preview && (
+        <img
+          src={preview}
+          className="w-40 h-28 object-cover border border-gray-600 rounded justify-self-end"
+        />
+      )}
     </div>
   );
 }
@@ -218,9 +186,9 @@ function DocumentUpload({ label, nameType, nameFile }: any) {
 function DocumentsWithUpload() {
   return (
     <Section title="Documents">
-      <DocumentUpload label="Proof of Identity" nameType="identityType" nameFile="identityDoc" />
-      <DocumentUpload label="Address Proof" nameType="addressDocType" nameFile="addressDoc" />
-      <DocumentUpload label="Date of Birth Proof" nameType="dobDocType" nameFile="dobDoc" />
+      <DocumentUpload label="Proof of Identity" />
+      <DocumentUpload label="Address Proof" />
+      <DocumentUpload label="Date of Birth Proof" />
     </Section>
   );
 }
@@ -228,24 +196,24 @@ function DocumentsWithUpload() {
 /* ================= PHOTO & SIGN ================= */
 
 function UploadPhotoSign() {
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [sign, setSign] = useState<string | null>(null);
+
   return (
     <Section title="Upload Documents">
-      <UploadBox label="Photo" name="photo" />
-      <UploadBox label="Signature" name="signature" />
+      <UploadBox label="Photo (JPG max 50KB)" preview={photo} setPreview={setPhoto} />
+      <UploadBox label="Signature(Hindi or English) (JPG max 50KB)" preview={sign} setPreview={setSign} />
     </Section>
   );
 }
 
-function UploadBox({ label, name }: any) {
-  const [preview, setPreview] = useState<string | null>(null);
-
+function UploadBox({ label, preview, setPreview }: any) {
   return (
     <div className="grid md:grid-cols-2 gap-4 col-span-2 items-center">
       <div>
         <p className="text-sm font-medium mb-1">{label}</p>
         <input
           type="file"
-          name={name}
           accept=".jpg,.jpeg"
           className="w-full p-2 bg-gray-900 border border-gray-600 rounded"
           onChange={(e) =>
@@ -255,7 +223,12 @@ function UploadBox({ label, name }: any) {
         />
       </div>
 
-      {preview && <img src={preview} className="w-32 h-32 object-cover border rounded justify-self-end" />}
+      {preview && (
+        <img
+          src={preview}
+          className="w-32 h-32 object-cover border rounded justify-self-end"
+        />
+      )}
     </div>
   );
 }
@@ -271,20 +244,19 @@ function Section({ title, children }: any) {
   );
 }
 
-function Input({ label, type = "text", name }: any) {
+function Input({ label, type = "text" }: any) {
   return (
     <input
       type={type}
-      name={name}
       placeholder={label}
       className="w-full p-3 rounded bg-gray-900 border border-gray-600"
     />
   );
 }
 
-function Select({ label, options, name }: any) {
+function Select({ label, options }: any) {
   return (
-    <select name={name} className="w-full p-3 rounded bg-gray-900 border border-gray-600">
+    <select className="w-full p-3 rounded bg-gray-900 border border-gray-600">
       <option value="">{label}</option>
       {options.map((o: string) => (
         <option key={o}>{o}</option>
@@ -293,22 +265,32 @@ function Select({ label, options, name }: any) {
   );
 }
 
-function ThreeInput({ a, b, c, prefix }: any) {
+function ThreeInput({ a, b, c }: any) {
   return (
     <>
-      <Input label={a} name={`${prefix}First`} />
-      <Input label={b} name={`${prefix}Middle`} />
-      <Input label={c} name={`${prefix}Last`} />
+      <Input label={a} />
+      <Input label={b} />
+      <Input label={c} />
     </>
   );
 }
 
-function RadioGroup({ options, name }: any) {
+/* ✅ FIXED RADIO GROUP */
+function RadioGroup({ options, label, name }: any) {
+  const [value, setValue] = useState("");
+
   return (
     <div className="flex flex-wrap gap-6 col-span-2">
+      {label && <p className="w-full font-semibold">{label}</p>}
+
       {options.map((o: string) => (
         <label key={o} className="flex items-center gap-2 cursor-pointer">
-          <input type="radio" name={name} value={o} />
+          <input
+            type="radio"
+            name={name}
+            checked={value === o}
+            onChange={() => setValue(o)}
+          />
           {o}
         </label>
       ))}
@@ -316,18 +298,33 @@ function RadioGroup({ options, name }: any) {
   );
 }
 
+/* ✅ SINGLE SELECT CHECKBOX LOGIC */
 function IncomeSourceSection() {
+  const [value, setValue] = useState("");
+
+  const options = [
+    "Salary",
+    "Business / Profession",
+    "House Property",
+    "Capital Gains",
+    "Other Sources",
+    "No Income",
+  ];
+
   return (
     <Section title="Source of Income">
-      <select name="incomeSource" className="w-full p-3 rounded bg-gray-900 border border-gray-600 col-span-2">
-        <option value="">Select</option>
-        <option>Salary</option>
-        <option>Business / Profession</option>
-        <option>House Property</option>
-        <option>Capital Gains</option>
-        <option>Other Sources</option>
-        <option>No Income</option>
-      </select>
+      <div className="grid grid-cols-2 gap-4 col-span-2">
+        {options.map((o) => (
+          <label key={o} className="flex gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={value === o}
+              onChange={() => setValue(o)}
+            />
+            {o}
+          </label>
+        ))}
+      </div>
     </Section>
   );
 }
@@ -336,24 +333,32 @@ function AddressSection() {
   return (
     <Section title="Full Address for Communication">
       <RadioGroup name="addressType" options={["Residence", "Office"]} />
-      <Input label="Full Address" name="address" />
-      <Input label="PIN Code" name="pinCode" />
+      <Input label="Full Address" />
+      <Input label="PIN Code" />
     </Section>
   );
 }
 
 function FeeSection({ amount }: any) {
-  return <div className="text-center text-xl font-bold text-green-400">Fee: ₹{amount}</div>;
+  return (
+    <div className="text-center text-xl font-bold text-green-400">
+      Fee: ₹{amount}
+    </div>
+  );
 }
 
 function Note() {
-  return <p className="text-yellow-400 text-center text-sm">* Aadhaar OTP required during application</p>;
+  return (
+    <p className="text-yellow-400 text-center text-sm">
+      * Aadhaar OTP required during application
+    </p>
+  );
 }
 
 function SubmitButton() {
   return (
     <div className="text-center">
-      <button type="submit" className="px-8 py-3 bg-green-600 rounded-lg font-bold hover:bg-green-700">
+      <button className="px-8 py-3 bg-green-600 rounded-lg font-bold hover:bg-green-700">
         Submit Application
       </button>
     </div>
