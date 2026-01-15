@@ -18,6 +18,7 @@ export default function PaymentClient() {
   if (!draftId) return;
 
 
+  
     fetch(`/api/pan/get?draftId=${draftId}`)
       .then(res => res.json())
       .then(data => {
