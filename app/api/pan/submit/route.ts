@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import PanApplication from "@/models/panapplication";
-// import { sendMail } from "@/lib/mailer";
-// import { createPDFBuffer } from "@/lib/pdf";
+import { sendMail } from "@/lib/mailer";
+import { createPDFBuffer } from "@/lib/pdf";
 
 export async function POST(req: NextRequest) {
   await connectDB();
@@ -49,15 +49,15 @@ export async function POST(req: NextRequest) {
     await app.save();
 
     // ✅ Generate PDF
-    // const pdfBuffer = await createPDFBuffer(app);
+     const pdfBuffer = await createPDFBuffer(app);
 
     // ✅ Send email
-    // await sendMail({
-    //   to: [app.email, process.env.ADMIN_EMAIL],
-    //   subject: "PAN Application Submitted Successfully",
-    //   text: "Your PAN application and documents have been received successfully.",
-    //   attachments: [{ filename: "PanApplication.pdf", content: pdfBuffer }],
-    // });
+    await sendMail({
+      to: [app.email, process.env.ADMIN_EMAIL],
+      subject: "PAN Application Submitted Successfully",
+      text: "Your PAN application and documents have been received successfully.",
+      attachments: [{ filename: "PanApplication.pdf", content: pdfBuffer }],
+    });
 
     console.log("📧 Email sent successfully to:", app.email);
     return NextResponse.json({ success: true });

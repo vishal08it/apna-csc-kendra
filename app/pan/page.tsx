@@ -272,7 +272,7 @@ function PaymentPopup({ draftId, amount, onClose }: any) {
         </button>
         <h1 className="text-2xl font-bold mb-4">Complete Payment</h1>
         <img
-          src="/qr code.png"
+          src="/qrcode.png"
           alt="QR Code"
           className="w-48 h-48 mx-auto mb-4 border-4 border-white rounded-xl"
         />
