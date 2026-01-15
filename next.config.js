@@ -1,4 +1,4 @@
-// next.config.ts
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -9,4 +9,4 @@ const nextConfig = {
   eslint: { ignoreDuringBuilds: true },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
