@@ -35,7 +35,7 @@ export default function PaymentModal({
         {/* QR IMAGE FROM PUBLIC FOLDER */}
         <div className="flex justify-center mb-4">
           <img
-            src="/qrcode.png"   
+            src="/qrcod.jpeg"   
             alt="UPI QR Code"
             className="w-64 h-64 object-contain border"
           />
