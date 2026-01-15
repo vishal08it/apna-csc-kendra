@@ -14,7 +14,7 @@ export default function ThankYouPage() {
         {/* Centered Image */}
         <div className="flex justify-center">
           <img
-            src="/logo.jpg"
+            src="/logos.jpg"
             alt="Thank You"
             className="w-96 max-w-full rounded-xl shadow-lg border border-gray-700"
           />
