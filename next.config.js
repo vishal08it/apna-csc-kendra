@@ -10,4 +10,4 @@ const nextConfig = {
   // eslint: { ignoreDuringBuilds: true }, ❌ remove this line in Next 16
 };
 
-module.exports = nextConfig;
+export default nextConfig;
