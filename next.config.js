@@ -6,8 +6,10 @@ const nextConfig = {
       { protocol: "https", hostname: "res.cloudinary.com" },
     ],
   },
-  typescript: { ignoreBuildErrors: true },
-  // eslint: { ignoreDuringBuilds: true }, ❌ remove this line in Next 16
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  // ❌ Removed: eslint.ignoreDuringBuilds — no longer valid in Next 16
 };
 
 export default nextConfig;
